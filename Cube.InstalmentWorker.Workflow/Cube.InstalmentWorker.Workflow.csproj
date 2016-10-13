@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{183B9012-C232-4C2A-811E-1E123AF460D7}</ProjectGuid>
+    <ProjectTypeGuids>{32f31d43-81cc-4c15-9de6-3fc5453562b6};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cube.InstalmentWorker.Workflow</RootNamespace>
+    <AssemblyName>Cube.InstalmentWorker.Workflow</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Framework.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Cube.XRM.Framework">
+      <HintPath>..\..\..\Framework\Cube.XRM.Framework.AddOn\bin\Debug\Cube.XRM.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Cube.XRM.Framework.AddOn">
+      <HintPath>..\..\..\Framework\Cube.XRM.Framework.AddOn\bin\Debug\Cube.XRM.Framework.AddOn.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Crm.Sdk.Proxy">
+      <HintPath>..\..\..\Framework\Cube.XRM.Framework.AddOn\bin\Debug\Microsoft.Crm.Sdk.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Xrm.Sdk">
+      <HintPath>..\..\..\Framework\Cube.XRM.Framework.AddOn\bin\Debug\Microsoft.Xrm.Sdk.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrm.Sdk.Workflow">
+      <HintPath>..\..\..\Framework\Cube.XRM.Framework.AddOn\bin\Debug\Microsoft.Xrm.Sdk.Workflow.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activities" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HistoryWatcher.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <TempDirectory>$(OutDir)Temp</TempDirectory>
+    <WorkflowProjectName>Cube.InstalmentWorker.Workflow</WorkflowProjectName>
+    <AddOnProjectName>Cube.XRM.Framework.AddOn</AddOnProjectName>
+    <FrameWorkProjectName>Cube.XRM.Framework</FrameWorkProjectName>
+    <KeyName>Framework.snk</KeyName>
+    <ILMergeCommand>"ReferencedAssemblies\ILMerge\ILMerge.exe" /keyfile:"$(KeyName)" /target:library /targetplatform:v4,"C:\Windows\Microsoft.NET\Framework\v4.0.30319"</ILMergeCommand>
+  </PropertyGroup>
+  <ItemGroup>
+    <MergedSourceFiles Include="$(TempDirectory)\*.*">
+    </MergedSourceFiles>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework.snk" />
+  </ItemGroup>
+  <Target Name="PostBuildEvent">
+    <MakeDir Directories="$(TempDirectory)" />
+    <Exec Command="$(ILMergeCommand) /out:&quot;$(TempDirectory)\$(WorkflowProjectName).dll&quot; &quot;$(OutDir)$(WorkflowProjectName).dll&quot; &quot;$(OutDir)$(AddOnProjectName).dll&quot;  &quot;$(OutDir)$(FrameworkProjectName).dll&quot;" />
+    <Message Text="Merging ... $(WorkflowProjectName) &amp; $(AddOnProjectName) &amp; $(FrameWorkProjectName)" Importance="high" />
+    <Copy SourceFiles="@(MergedSourceFiles)" DestinationFolder="$(OutDir)" />
+    <Message Text="Merge completed successfully" Importance="high" />
+  </Target>
+</Project>
